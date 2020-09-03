@@ -39,9 +39,9 @@ async function insertNewHourRecordToMongo(_manager) {
 
 
     try {
-        const newRecord = _manager.formMongoRecord();
+        const newRecord = _manager.formMongoDbRecord();
         console.log("##DATA  newRecord ", newRecord);
-        console.log("##DATA  formSqlRecord ", _manager.formSqlRecord());
+        console.log("##DATA  formSqlRecord ", _manager.formMySQLRecord());
 
         try {
             const mongoClient = await require('./db-mongo')();

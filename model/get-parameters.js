@@ -16,8 +16,8 @@ function getParametrValue(parametrName) {
     const parametr = parametrs.eco3[parametrName];
     // console.log("##getParametrValue    parametr ", parametrName, parametr  , parametr.index )
     return parametr
-        ? Math.random() * parametr.index
-        // ? m340read[parametr.index]
+        // ? Math.random() * parametr.index
+        ? m340data[parametr.index]
         : NaN
 }
 
@@ -39,7 +39,7 @@ function getReportsArray() {
                     rej([]) ;
                     console.log(" ##### getReportsArray() read FILE PRONBLEM  ", err)
                 } else {
-                    console.log("data - ",  data)
+                    // console.log("data - ",  data)
 
                     reportsArray = JSON.parse(data).list;
                     res(reportsArray)

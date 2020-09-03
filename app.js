@@ -8,7 +8,8 @@ const LAST_DAY = true;
 const BLOCK_START = 0;
 const BLOCK_SIZE = 62;
 const FLOATS_BLOCK_SIZE = 58;
-const INT_DATA = [29,30,31,32];
+const M340_NO_CONNECTION = 58;
+const INT_DATA = [29, 30, 31, 32];
 const DATA_DELAY = 2000;
 
 const m340 = require('./m340read');
@@ -26,8 +27,8 @@ const getLastDay = require('./get-last-day').getLastDayString;
 //temporary in 2 arrays
 const getLastDayEco1 = require('./controller/update-last-day-test');
 
-global.m340data = [];
-client.connectTCP("192.168.1.229", { port: 4001 });
+global.m340data = [...Array(FLOATS_BLOCK_SIZE + INT_DATA.length)];
+client.connectTCP("192.168.1.229", { port: 4001 }).catch((err)=>{console.log("PLC connection error ", err.message)});
 client.setID(5);
 
 handler = setInterval(function () {
@@ -36,16 +37,27 @@ handler = setInterval(function () {
         .then(data => {
 
             const _answer = data.data;
-            const floats = m340.getFloatsFromMOdbusCoils(_answer.slice(0,FLOATS_BLOCK_SIZE));
-            floats.forEach((fl,i)=>{
+            const floats = m340.getFloatsFromMOdbusCoils(_answer.slice(0, FLOATS_BLOCK_SIZE));
+            floats.forEach((fl, i) => {
                 m340data[i] = fl
             });
-            INT_DATA.forEach(i=>{
-                m340data[i] = _answer[i+29];
+            INT_DATA.forEach(i => {
+                m340data[i] = _answer[i + 29];
             })
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            // console.log(" readHoldingRegisters ERROR", err);
+            m340data = m340data.map(i => null);
+        });
 }, 2000);
+
+setTimeout(async () => {
+    try {
+        await  require('./reports/reports-manager')();
+    } catch (error) {
+        console.log('reports manager problem ',)
+    }
+}, 5000);
 //==================================================================================================
 
 const WebSocketClient = require('websocket').client;
@@ -98,7 +110,7 @@ demon.on('connect', function (connection) {
     function sendNumber() {
         if (connection.connected) {
 
-            const dataarr = m340data.map((el,index) => Number.isFinite(el) ? (index < 30 ? el.toFixed(2) : el ): " - ");
+            const dataarr = m340data.map((el, index) => Number.isFinite(el) ? (index < 30 ? el.toFixed(2) : el) : " - ");
             const dt = new Date();
             let outgoingMessage = JSON.stringify({ eco3: dataarr, timestamp: dt }).toString();
             connection.sendUTF(outgoingMessage);

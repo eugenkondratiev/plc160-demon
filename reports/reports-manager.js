@@ -20,7 +20,7 @@ class ReportManager {
             const _par = { name: p.parametr };
 
             const pv = getParametrValue(p.parametr);
-_par.type = p.type;
+            _par.type = p.type;
             switch (p.type) {
                 case MIN:
                     _par.par = new ReportMinParametr(pv)
@@ -32,7 +32,6 @@ _par.type = p.type;
                     _par.par = new ReportParametr()
                     break;
             }
-
             return _par
         })
     }
@@ -47,9 +46,9 @@ _par.type = p.type;
         this._list.forEach(element => {
             element.par.emit('hour')
         });
-        setTimeout(()=>{
+        setTimeout(() => {
             ;
-        },0)
+        }, 0)
     }
     formMySQLRecord() {
         ;
@@ -59,7 +58,7 @@ _par.type = p.type;
             return { [el.name + (el.type == MIN ? "min" : el.type == MAX ? "max" : "")]: el.par._lastHour }
         });
         const currentDateTime = new Date();
-        const hh = currentDateTime.toLocaleTimeString("ru-UA", { hour: "2-digit"}).slice(0, 3) + ":00:00";
+        const hh = currentDateTime.toLocaleTimeString("ru-UA", { hour: "2-digit" }).slice(0, 3) + ":00:00";
         return {
             _id: currentDateTime.toLocaleString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 10) + " "
                 + hh,
@@ -69,29 +68,23 @@ _par.type = p.type;
             }, {})
         }
     }
-
 }
 
-
 async function main() {
-
     try {
         const parametrs = await getReportParametrsList();
         // console.log("####  pars", parametrs);
         console.log(getParametrValue("T_3"));
-
         let reportsArray;
         try {
             reportsArray = await getReportsArray();
-            console.log("!!!! ####  reportsArray main ", reportsArray);
+            // console.log("!!!! ####  reportsArray main ", reportsArray);
         } catch (error) {
             console.log("## getReportsArray ERROR ", error)
         }
-
         const manager = new ReportManager(reportsArray);
         // const manager = new ReportManager(reportsArray);
         const schedule = require('node-schedule');
-
         const rule = new schedule.RecurrenceRule();
         rule.minute = 0;
         rule.seconds = 0;
@@ -135,4 +128,6 @@ async function main() {
 }
 
 
-main();
+// main();
+
+module.exports = main;
