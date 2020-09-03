@@ -10,6 +10,7 @@ const fs = require('fs');
 // console.log(_reports);
 
 const { getReportParametrsList, getParametrValue, getReportsArray } = require('../model/get-parameters');
+const { CLIENT_RENEG_LIMIT } = require('tls');
 
 
 class ReportManager {
@@ -19,7 +20,7 @@ class ReportManager {
             const _par = { name: p.parametr };
 
             const pv = getParametrValue(p.parametr);
-
+_par.type = p.type;
             switch (p.type) {
                 case MIN:
                     _par.par = new ReportMinParametr(pv)
@@ -46,12 +47,27 @@ class ReportManager {
         this._list.forEach(element => {
             element.par.emit('hour')
         });
+        setTimeout(()=>{
+            ;
+        },0)
     }
     formMySQLRecord() {
         ;
     }
     formMongoDbRecord() {
-        ;
+        const viewTable = this._list.map(el => {
+            return { [el.name + (el.type == MIN ? "min" : el.type == MAX ? "max" : "")]: el.par._lastHour }
+        });
+        const currentDateTime = new Date();
+        const hh = currentDateTime.toLocaleTimeString("ru-UA", { hour: "2-digit"}).slice(0, 3) + ":00:00";
+        return {
+            _id: currentDateTime.toLocaleString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 10) + " "
+                + hh,
+            // + currentDateTime.toLocaleTimeString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 3) + "00:00",
+            values: viewTable.reduce((acc, el) => {
+                return { ...acc, ...el };
+            }, {})
+        }
     }
 
 }
@@ -62,8 +78,8 @@ async function main() {
     try {
         const parametrs = await getReportParametrsList();
         // console.log("####  pars", parametrs);
-
         console.log(getParametrValue("T_3"));
+
         let reportsArray;
         try {
             reportsArray = await getReportsArray();
@@ -72,8 +88,8 @@ async function main() {
             console.log("## getReportsArray ERROR ", error)
         }
 
-
         const manager = new ReportManager(reportsArray);
+        // const manager = new ReportManager(reportsArray);
         const schedule = require('node-schedule');
 
         const rule = new schedule.RecurrenceRule();
@@ -93,17 +109,17 @@ async function main() {
             // console.log("####  MANAGER  --- ", Array.isArray(viewTable));
             console.table(viewTable);
         }
+        console.log(manager.formMongoDbRecord());
 
         const schHandler = schedule.scheduleJob(rule, async () => {
             console.log('TNew hour i think !  ', (new Date()).toUTCString);
             try {
                 manager.handleNewHour();
                 showViewTable();
-                await require('../model/insert-hour-to-mongo')();
+                await require('../model/insert-hour-to-mongo')(manager);
             } catch (error) {
                 console.log("  hour handle main problem ", error);
             }
-
         });
 
         setInterval(() => {

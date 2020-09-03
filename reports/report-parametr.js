@@ -19,7 +19,7 @@ class ReportParameter extends EventEmitter {
         this.on('hour', () => {
             console.log("## new hour");
             this.handleNewHour();
-            this.seconds = 0
+            this._seconds = 0
         })
 
     }

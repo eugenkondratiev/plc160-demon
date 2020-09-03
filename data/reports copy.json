@@ -1,0 +1,28 @@
+{
+    "list":[
+        { "parametr": "T_3", "type": 0 },
+        { "parametr": "T_5", "type": 0 },
+        { "parametr": "T_3", "type": 1 },
+        { "parametr": "T_3", "type": 2 },
+        { "parametr": "T_5", "type": 1 },
+        { "parametr": "T_5", "type": 2 },
+        { "parametr": "P_6", "type": 0 },
+        { "parametr": "P_8", "type": 0 },
+        { "parametr": "P_9", "type": 0 },
+        { "parametr": "Q_39", "type": 0 },
+        { "parametr": "T_7", "type": 0 },
+        { "parametr": "KG_21", "type": 0 },
+        { "parametr": "KG_22", "type": 0 },
+        { "parametr": "KG_23", "type": 0 },
+        { "parametr": "KG_28", "type": 0 },
+        { "parametr": "EI_1", "type": 0 },
+        { "parametr": "EI_2", "type": 0 },
+        { "parametr": "EI_10", "type": 0 },
+        { "parametr": "P_11", "type": 0 },
+        { "parametr": "P_12", "type": 0 },
+        { "parametr": "P_13", "type": 0 },
+        { "parametr": "T_18", "type": 0 },
+        { "parametr": "T_19", "type": 0 },
+        { "parametr": "P_30", "type": 0 }
+    ]
+}

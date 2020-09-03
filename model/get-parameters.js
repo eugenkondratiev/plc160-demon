@@ -34,11 +34,13 @@ async function getReportParametrsList() {
 function getReportsArray() {
     return new Promise((res,rej)=>{
         if (!reportsArray) {
-            fs.readFile('data/reports.json', {}, (err, data) => {
+            fs.readFile('data/reports.json', {encode:null}, (err, data) => {
                 if (err) { 
                     rej([]) ;
                     console.log(" ##### getReportsArray() read FILE PRONBLEM  ", err)
                 } else {
+                    console.log("data - ",  data)
+
                     reportsArray = JSON.parse(data).list;
                     res(reportsArray)
                  }
