@@ -1,0 +1,10 @@
+{
+    "list":[
+        { "parametr": "T_3", "type": 0 },
+        { "parametr": "T_3", "type": 1 },
+        { "parametr": "T_3", "type": 2 },
+        { "parametr": "T_5", "type": 0 },
+        { "parametr": "P_6", "type": 0 },
+        { "parametr": "P_9", "type": 0 }
+    ]
+}

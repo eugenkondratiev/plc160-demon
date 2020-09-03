@@ -49,14 +49,6 @@ function testgetM340registersToFloat(a, b) {
 
 }
 
-// console.log( testgetM340registersToFloat(0, 0));
-
-// console.log( (3 << 16) + 3, ((3 << 16) + 3).bin());
-// const testInt = (1 << 16) & 65536;
-// console.log( testInt , testInt.bin(), !testInt);
-// console.log(m340.getRealFromModbusCoils);
-
-
     let triesNumber = 0;
 let handler = setInterval(function() {
 //callbackAPI
@@ -85,41 +77,6 @@ let handler = setInterval(function() {
 
     });
     console.log("aoalololo")
-    //PromiseAPI
-    // client.readHoldingRegisters(0, 20)
-    // .then(data => {
-
-    //     console.log("readHoldingRegisters");
-    //       const _answer = data.data;
-    //     // console.log(++triesNumber, /*_answer,*/ m340.getRealFromModbusCoils(_answer, 0), 
-    //     // _answer[2], _answer[3],
-    //     // m340.getRealFromModbusCoils(_answer, 4),
-    //     // m340.getRealFromModbusCoils(_answer, 6),
-    //     // m340.getRealFromModbusCoils(_answer, 8),
-    //     // m340.getRealFromModbusCoils(_answer, 10),
-    //     // m340.getRealFromModbusCoils(_answer, 12),
-    //     // m340.getRealFromModbusCoils(_answer, 14),
-    //     // _answer[16], _answer[17],
-    //     // );
-    //     //console.log(typeof _answer, Array.isArray(_answer));
-
-    //     //read array of floats
-    //     console.log("### ANSWER " , _answer);
-    //     const floats = m340.getFloatsFromMOdbusCoils(_answer);
-    //     console.log("### FLOATS" , floats);
-        
-    //     //read array of ints
-    //     // const int16Arr = new Int16Array(_answer);
-    //     // console.log(_answer, _answer.length, int16Arr, int16Arr.length);
-    //     if (++triesNumber > 1 ) {
-    //         clearInterval(handler);
-    //         client.close();
-    //     }
-  
-    // })
-    // .catch(err=>{
-    //     console.log(" REading error!!", err)
-    // });
 }, 2000);
 
 

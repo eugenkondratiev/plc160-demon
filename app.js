@@ -26,37 +26,23 @@ const getLastDay = require('./get-last-day').getLastDayString;
 //temporary in 2 arrays
 const getLastDayEco1 = require('./controller/update-last-day-test');
 
-let m340data = [];
+global.m340data = [];
 client.connectTCP("192.168.1.229", { port: 4001 });
 client.setID(5);
 
 handler = setInterval(function () {
-
-
     //PromiseAPI
     client.readHoldingRegisters(BLOCK_START, BLOCK_SIZE)
         .then(data => {
 
             const _answer = data.data;
-            // console.log(_answer);
-
             const floats = m340.getFloatsFromMOdbusCoils(_answer.slice(0,FLOATS_BLOCK_SIZE));
-            // console.log(floats);
-
-            // addresses.forEach((addr, index) => {
-            //     m340data[index] = floats[addr];
-            // });
             floats.forEach((fl,i)=>{
                 m340data[i] = fl
             });
             INT_DATA.forEach(i=>{
                 m340data[i] = _answer[i+29];
             })
-            
-
-            // console.log(m340data, m340data.length);
-
-
         })
         .catch(err => console.log(err));
 }, 2000);
@@ -67,23 +53,18 @@ const WebSocketClient = require('websocket').client;
 const demon = new WebSocketClient({ closeTimeout: 120000 });
 demon.on('connectFailed', function (error) {
     logIt('Connect Error: ' + error.toString());
-    //console.log('Connect Error: ' + error.toString());
-    // recallingFlag = permanentRecall();
     process.exit();
 });
 
 
 
 demon.on('connect', function (connection) {
-    //   console.log('WebSocket Client Connected');
     logIt("demon.connect('ws://95.158.47.15:8081');");
     connection.on('error', function (error) {
         logIt("Connection Error: " + error.toString());
-        // console.log("Connection Error: " + error.toString());
     });
     connection.on('close', function () {
         logIt('echo-protocol Connection Closed', connection.state);
-        //        console.log('echo-protocol Connection Closed', connection.state);
         process.exit();
     });
     connection.on('message', async function (message) {
@@ -95,7 +76,6 @@ demon.on('connect', function (connection) {
             const msg = JSON.parse(message.utf8Data);
             if (msg.lastDayUpdate) {
                 // const dayDataEco1 = await getLastDayEco1();
-
                 const answer = [];
                 for (let i = 0; i < 24; i++) {
                     const resp = await readHourFromPlc(client, i, LAST_DAY);
@@ -112,20 +92,15 @@ demon.on('connect', function (connection) {
                 console.log("outgoingMessage   ", outgoingMessage);
                 connection.sendUTF(outgoingMessage);
             }
-            // console.log("Received: '" + message.utf8Data + "'");
         }
     });
 
     function sendNumber() {
         if (connection.connected) {
-            //console.log("connection.connected", connection.connected);
-            //logIt("connection.connected", connection.connected);
 
             const dataarr = m340data.map((el,index) => Number.isFinite(el) ? (index < 30 ? el.toFixed(2) : el ): " - ");
             const dt = new Date();
             let outgoingMessage = JSON.stringify({ eco3: dataarr, timestamp: dt }).toString();
-            //    console.log("outgoingMessage", outgoingMessage)
-            // logIt("outgoingMessage", outgoingMessage)
             connection.sendUTF(outgoingMessage);
             let handler = setTimeout(sendNumber, DATA_DELAY);
         }

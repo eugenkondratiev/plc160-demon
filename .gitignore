@@ -1,5 +1,17 @@
 node_modules
 port-test.js
 transfer
+connection*.js
+*test.*
+nodemon.json
+pm2-process.json
+logs
+data/ais.json
+question*.js
+access.log
+*.log
+*.env
+.gitignore
+.jshintrc
 
 
