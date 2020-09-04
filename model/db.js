@@ -2,7 +2,7 @@ const dbPool = require('./connection-pool-eco')();
 
 
 function dbExecute(_sql, values) {
-    console.log("_sql :  ", _sql);
+    console.log("_sql dbExecute :  ", _sql);
 
     return new Promise((resolve, reject) => {
             dbPool.execute( {
@@ -20,7 +20,7 @@ function dbExecute(_sql, values) {
 }
 
 function dbQuery(_sql, values) {
-    // console.log("_sql :  ", _sql);
+    console.log("_sql :  ", _sql);
 
     return new Promise((resolve, reject) => {
             dbPool.query( {
@@ -30,7 +30,8 @@ function dbQuery(_sql, values) {
                 , 
                 [values],
                  function(err, rows, fields){
-                    if (err) reject(err);
+                     
+                    if (err) { reject(err) ; console.log('dbQuery  error', [values], err.message)};
                     resolve({rows, fields})               
                 }
             );

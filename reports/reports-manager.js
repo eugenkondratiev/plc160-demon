@@ -51,7 +51,10 @@ class ReportManager {
         }, 0)
     }
     formMySQLRecord() {
-        const hourRow = this._list.map(el =>
+        const DELETED_PARAMETERS_START = 16;
+        const newList = [...this._list];
+        newList.splice(DELETED_PARAMETERS_START,3);
+        const hourRow = newList.map(el =>
             isFinite(el.par._lastHour) ? parseFloat(el.par._lastHour).toFixed(3) : "-"
         );
         const currentDateTime = new Date();
@@ -108,14 +111,15 @@ async function main() {
             // console.log("####  MANAGER  --- ", Array.isArray(viewTable));
             console.table(viewTable);
         }
-        console.log(manager.formMongoDbRecord());
+        // console.log(manager.formMongoDbRecord());
 
         const schHandler = schedule.scheduleJob(rule, async () => {
-            console.log('TNew hour i think !  ', (new Date()).toUTCString);
+            console.log('New hour, i think !  ', (new Date()).toUTCString);
             try {
                 manager.handleNewHour();
                 showViewTable();
                 await require('../model/insert-hour-to-mongo')(manager);
+                await require('../model/insert-hour-to-mysql')(manager);
             } catch (error) {
                 console.log("  hour handle main problem ", error);
             }
@@ -126,6 +130,12 @@ async function main() {
             // console.log(manager._list);
             // showViewTable()
         }, 1000)
+
+        setTimeout(() => {
+            require('../model/insert-hour-to-mysql')(manager).catch(err=>(console.error("model/insert-hour-to-mysql error ", err)));
+            // console.log(manager._list);
+            // showViewTable()
+        }, 7000)
 
     } catch (error) {
         console.log("## main ERROR ", error)

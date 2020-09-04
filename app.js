@@ -5,12 +5,19 @@ const ModbusRTU = require("modbus-serial");
 const client = new ModbusRTU(tcpPort);
 const LAST_DAY = true;
 
+const PLC_PORT = 4001;
+
 const BLOCK_START = 0;
 const BLOCK_SIZE = 62;
 const FLOATS_BLOCK_SIZE = 58;
-const M340_NO_CONNECTION = 58;
 const INT_DATA = [29, 30, 31, 32];
-const DATA_DELAY = 2000;
+const M340_NO_CONNECTION = FLOATS_BLOCK_SIZE + INT_DATA.length;
+
+const DATA_SEND_DELAY = 2000;
+const PLC_RECONNECT_DELAY = 180000;
+const SERVER_RECONNECT_DELAY = 15000;
+const REACHABLE_PORT_TIMEOUT = 5000;
+const DATA_COLLECT_PERIOD = 2000;
 
 const m340 = require('./m340read');
 const bits = require('./bit-operations');
@@ -18,26 +25,23 @@ bits.addBinFunctions();
 
 const logIt = require("./logger");
 const readHourFromPlc = require('./controller/read-hour-from_plc');
+
+
 // const getLastDayHourString = require('./get-last-day').getLastDayHourString;
 // const getLastDay = require('./get-last-day').getLastDayString;
-
 const { getCurrentLocalDateTime, getLastDayString: getLastDay, getLastDayHourString } = require('./get-last-day');
 
-// const addresses = [0, 10, 18, 19, 21, 43, 44, 45, 46, 47, 52, 54, 55, 17, 34, 35, 39, 51, 31, 7];
-// const parameters = ["eco1LastDayW38", "T_10", "P_22", "P_21", "P_34", "T_41", "T_42", "P_36",
-//     "W_38", "Q_39", "EI_86", "P_19", "EI_82", "P_23", "meo_92", "meo_93", "meo_97", "EI_83", "EI_74", "T_7"];
-//temporary in 2 arrays
 const getLastDayEco1 = require('./controller/update-last-day-test');
 
-global.m340data = [...Array(FLOATS_BLOCK_SIZE + INT_DATA.length)];
+global.m340data = [...Array(M340_NO_CONNECTION )];
 function connectPLC() {
-    client.connectTCP("192.168.1.229", { port: 4001 })
+    client.connectTCP("192.168.1.229", { port: PLC_PORT })
         .then(() => {
             client.setID(5);
         })
         .catch((err) => {
             console.log(`PLC connection error ${getCurrentLocalDateTime()} ----  `, err.message);
-            setTimeout(connectPLC, 180000)
+            setTimeout(connectPLC, PLC_RECONNECT_DELAY)
         });
 
 }
@@ -62,7 +66,7 @@ handler = setInterval(function () {
             // console.log(" readHoldingRegisters ERROR", err);
             m340data = m340data.map(i => null);
         });
-}, 2000);
+}, DATA_COLLECT_PERIOD);
 
 setTimeout(async () => {
     try {
@@ -127,7 +131,7 @@ demon.on('connect', function (connection) {
             const dt = new Date();
             let outgoingMessage = JSON.stringify({ eco3: dataarr, timestamp: dt }).toString();
             connection.sendUTF(outgoingMessage);
-            let handler = setTimeout(sendNumber, DATA_DELAY);
+            let handler = setTimeout(sendNumber, DATA_SEND_DELAY);
         }
     }
     dataHandler = sendNumber();
@@ -138,14 +142,14 @@ const isPortReahable = require('./is-port-reachable');
 
 function reCall() {
 
-    isPortReahable(8081, { host: '95.158.47.15', timeout: 5000 })
+    isPortReahable(8081, { host: '95.158.47.15', timeout: REACHABLE_PORT_TIMEOUT })
         .then(isTrue => {
             if (isTrue) {
                 // logIt("demon.connect('ws://95.158.47.15:8081');");
                 demon.connect('ws://95.158.47.15:8081');
             } else {
                 logIt("Can not connect. Another try;");
-                setTimeout(reCall, 15000);
+                setTimeout(reCall, SERVER_RECONNECT_DELAY);
             }
         })
         .catch(err => {
