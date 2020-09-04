@@ -51,7 +51,14 @@ class ReportManager {
         }, 0)
     }
     formMySQLRecord() {
-        ;
+        const hourRow = this._list.map(el =>
+            isFinite(el.par._lastHour) ? parseFloat(el.par._lastHour).toFixed(3) : "-"
+        );
+        const currentDateTime = new Date();
+        const hh = currentDateTime.toLocaleTimeString("ru-UA", { hour: "2-digit" }).slice(0, 3) + ":00:00";
+        hourRow.unshift(currentDateTime.toLocaleString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 10) + " "+ hh)
+        // + currentDateTime.toLocaleTimeString().slice(0, 3) + "00:00")
+        return hourRow;
     }
     formMongoDbRecord() {
         const viewTable = this._list.map(el => {
@@ -60,8 +67,7 @@ class ReportManager {
         const currentDateTime = new Date();
         const hh = currentDateTime.toLocaleTimeString("ru-UA", { hour: "2-digit" }).slice(0, 3) + ":00:00";
         return {
-            _id: currentDateTime.toLocaleString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 10) + " "
-                + hh,
+            _id: currentDateTime.toLocaleString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 10) + " "+ hh,
             // + currentDateTime.toLocaleTimeString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 3) + "00:00",
             values: viewTable.reduce((acc, el) => {
                 return { ...acc, ...el };

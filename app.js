@@ -18,8 +18,10 @@ bits.addBinFunctions();
 
 const logIt = require("./logger");
 const readHourFromPlc = require('./controller/read-hour-from_plc');
-const getLastDayHourString = require('./get-last-day').getLastDayHourString;
-const getLastDay = require('./get-last-day').getLastDayString;
+// const getLastDayHourString = require('./get-last-day').getLastDayHourString;
+// const getLastDay = require('./get-last-day').getLastDayString;
+
+const { getCurrentLocalDateTime, getLastDayString: getLastDay, getLastDayHourString } = require('./get-last-day');
 
 // const addresses = [0, 10, 18, 19, 21, 43, 44, 45, 46, 47, 52, 54, 55, 17, 34, 35, 39, 51, 31, 7];
 // const parameters = ["eco1LastDayW38", "T_10", "P_22", "P_21", "P_34", "T_41", "T_42", "P_36",
@@ -28,8 +30,19 @@ const getLastDay = require('./get-last-day').getLastDayString;
 const getLastDayEco1 = require('./controller/update-last-day-test');
 
 global.m340data = [...Array(FLOATS_BLOCK_SIZE + INT_DATA.length)];
-client.connectTCP("192.168.1.229", { port: 4001 }).catch((err)=>{console.log("PLC connection error ", err.message)});
-client.setID(5);
+function connectPLC() {
+    client.connectTCP("192.168.1.229", { port: 4001 })
+        .then(() => {
+            client.setID(5);
+        })
+        .catch((err) => {
+            console.log(`PLC connection error ${getCurrentLocalDateTime()} ----  `, err.message);
+            setTimeout(connectPLC, 180000)
+        });
+
+}
+
+connectPLC();
 
 handler = setInterval(function () {
     //PromiseAPI
@@ -53,7 +66,7 @@ handler = setInterval(function () {
 
 setTimeout(async () => {
     try {
-        await  require('./reports/reports-manager')();
+        await require('./reports/reports-manager')();
     } catch (error) {
         console.log('reports manager problem ',)
     }
@@ -86,7 +99,7 @@ demon.on('connect', function (connection) {
             // TODO: receive necessery parameters list
             logIt("Received: '" + message.utf8Data + "'");
             const msg = JSON.parse(message.utf8Data);
-            if (msg.lastDayUpdate) {
+            if (msg.lastDayUpdate && msg.eco == 3) {
                 // const dayDataEco1 = await getLastDayEco1();
                 const answer = [];
                 for (let i = 0; i < 24; i++) {
@@ -95,7 +108,7 @@ demon.on('connect', function (connection) {
                     console.log("resp " + i + " ", resp);
                     answer.push(resp)
                 }
-                logIt("Handled day data Eco1 Day: '" + JSON.stringify(answer) + "\n'");
+                logIt("Handled day data Eco3 Day: '" + JSON.stringify(answer) + "\n'");
 
                 // logIt("Handled day data: '" + JSON.stringify(dayDataEco1) + "'");
 
