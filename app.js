@@ -17,7 +17,7 @@ const DATA_SEND_DELAY = 2000;
 const PLC_RECONNECT_DELAY = 180000;
 const SERVER_RECONNECT_DELAY = 15000;
 const REACHABLE_PORT_TIMEOUT = 5000;
-const DATA_COLLECT_PERIOD = 2000;
+const DATA_COLLECT_PERIOD = 1000;
 
 const m340 = require('./m340read');
 const bits = require('./bit-operations');

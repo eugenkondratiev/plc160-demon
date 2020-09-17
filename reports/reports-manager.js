@@ -53,13 +53,13 @@ class ReportManager {
     formMySQLRecord() {
         const DELETED_PARAMETERS_START = 16;
         const newList = [...this._list];
-        newList.splice(DELETED_PARAMETERS_START,3);
+        newList.splice(DELETED_PARAMETERS_START, 3);
         const hourRow = newList.map(el =>
             isFinite(el.par._lastHour) ? parseFloat(el.par._lastHour).toFixed(3) : "-"
         );
         const currentDateTime = new Date();
         const hh = currentDateTime.toLocaleTimeString("ru-UA", { hour: "2-digit" }).slice(0, 3) + ":00:00";
-        hourRow.unshift(currentDateTime.toLocaleString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 10) + " "+ hh)
+        hourRow.unshift(currentDateTime.toLocaleString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 10) + " " + hh)
         // + currentDateTime.toLocaleTimeString().slice(0, 3) + "00:00")
         return hourRow;
     }
@@ -70,7 +70,7 @@ class ReportManager {
         const currentDateTime = new Date();
         const hh = currentDateTime.toLocaleTimeString("ru-UA", { hour: "2-digit" }).slice(0, 3) + ":00:00";
         return {
-            _id: currentDateTime.toLocaleString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 10) + " "+ hh,
+            _id: currentDateTime.toLocaleString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 10) + " " + hh,
             // + currentDateTime.toLocaleTimeString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 3) + "00:00",
             values: viewTable.reduce((acc, el) => {
                 return { ...acc, ...el };
@@ -118,8 +118,16 @@ async function main() {
             try {
                 manager.handleNewHour();
                 showViewTable();
-                await require('../model/insert-hour-to-mongo')(manager);
-                await require('../model/insert-hour-to-mysql')(manager);
+                try {
+                    await require('../model/insert-hour-to-mongo')(manager);
+                } catch (error) {
+                    console.log("  insert-hour-to-mongo problem ", error);
+                }
+                try {
+                    await require('../model/insert-hour-to-mysql')(manager);
+                } catch (error) {
+                    console.log("  insert-hour-to-mysql problem ", error);
+                }
             } catch (error) {
                 console.log("  hour handle main problem ", error);
             }
@@ -132,7 +140,7 @@ async function main() {
         }, 1000)
 
         setTimeout(() => {
-            require('../model/insert-hour-to-mysql')(manager).catch(err=>(console.error("model/insert-hour-to-mysql error ", err)));
+            require('../model/insert-hour-to-mysql')(manager).catch(err => (console.error("model/insert-hour-to-mysql error ", err)));
             // console.log(manager._list);
             // showViewTable()
         }, 7000)
