@@ -16,7 +16,7 @@ function getDuplicateUpdateString(rows) {
     console.log("getDuplicateUpdateString rows ", rows.length, rows)
     noDate.shift();
 
-    const ins = "INSERT INTO eco.hourseco3 (`dt`, `T_3`, `T_3min`, `T_3max`, `T_18`, `T_18min`, `T_18max`, `T_7`, `Q_39`, `P_6`, `P_8`, `P_9`, `T_5`, `T_42`, `KG_21`, `KG_22`, `KG_23`, `KG_28`, `P_11`, `P_12`, `P_13`, `T_19`, `P_30`) VALUES ? "
+    const ins = "INSERT INTO eco.hourseco3 (`dt`, `T_3`, `T_3min`, `T_3max`, `T_18`, `T_18min`, `T_18max`, `T_7`, `Q_39`, `P_6`, `P_8`, `P_9`, `T_5`, `KG_21`, `KG_22`, `KG_23`, `KG_28`, `P_11`, `P_12`, `P_13`, `T_19`, `P_30`) VALUES ? "
     const str = " ON DUPLICATE KEY UPDATE ";
     const dupStr = noDate.reduce(keyupdate, str);
     return ins + dupStr;
