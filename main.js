@@ -7,24 +7,12 @@ const m340 = require('./m340read');
 const bits = require('./bit-operations');
 bits.addBinFunctions();
 
-// create an empty modbus client
-// var ModbusRTU = require("modbus-serial");
-// var client = new ModbusRTU();
-
-// // open connection to a tcp line
-// client.connectTCP("95.158.47.15", { port: 30502 });
-
-//client.connectTCP("192.168.1.100", { port: 502 });
 //client.connectTCP("192.168.1.225", { port: 502 });
 client.connectTCP("192.168.1.229", { port: 4001 });
  
 //client.connectTCP(tcpPort, { port: 502 });
 client.setID(1);
-//client.open();
 
-// console.log("101".bin());
-//  console.log(7.5.bin());
-// console.log(Number(3.3).bin());
 const math = require('./math-utils'); 
 console.log(math.uintToInt(32768));
 console.log(" 36176 =>" + math.uintToInt(36176));

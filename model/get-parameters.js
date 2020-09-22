@@ -1,22 +1,23 @@
-const testReportsArray = [
-    { parametr: "T_3", type: 0 },
-    { parametr: "T_3", type: 1 },
-    { parametr: "T_3", type: 2 },
-    { parametr: "T_5", type: 0 },
-    { parametr: "P_6", type: 0 },
-    { parametr: "P_9", type: 0 },
-]
+// const testReportsArray = [
+//     { parametr: "T_3", type: 0 },
+//     { parametr: "T_3", type: 1 },
+//     { parametr: "T_3", type: 2 },
+//     { parametr: "T_5", type: 0 },
+//     { parametr: "P_6", type: 0 },
+//     { parametr: "P_9", type: 0 },
+// ]
+
 let parametrs;
 let reportsArray;
 const fs = require('fs');
+const logIt = require('../logger');
+
 // const util = require('util');
 // const readFilePromis = util.promisify(fs.readFile, { encoding: 'utf-8'});
 
 function getParametrValue(parametrName) {
     const parametr = parametrs.eco3[parametrName];
-    // console.log("##getParametrValue    parametr ", parametrName, parametr  , parametr.index )
     return parametr
-        // ? Math.random() * parametr.index
         ? m340data[parametr.index]
         : NaN
 }
@@ -26,7 +27,7 @@ async function getReportParametrsList() {
         return parametrs
     } else {
         parametrs = await require('../data/read-parameters').getLists();
-        console.log("####  pars", parametrs);
+        // console.log("####  pars", parametrs);
         return parametrs
     }
 }
@@ -37,10 +38,9 @@ function getReportsArray() {
             fs.readFile('data/reports.json', {encode:null}, (err, data) => {
                 if (err) { 
                     rej([]) ;
-                    console.log(" ##### getReportsArray() read FILE PRONBLEM  ", err)
+                    logIt(" ##### getReportsArray() read FILE PRONBLEM  ", err)
                 } else {
                     // console.log("data - ",  data)
-
                     reportsArray = JSON.parse(data).list;
                     res(reportsArray)
                  }
@@ -49,10 +49,7 @@ function getReportsArray() {
         } else {
             res(reportsArray)
         }
-    })
-
-
-    
+    })   
 }
 
 module.exports = {

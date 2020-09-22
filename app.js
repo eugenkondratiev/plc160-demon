@@ -26,14 +26,11 @@ bits.addBinFunctions();
 const logIt = require("./logger");
 const readHourFromPlc = require('./controller/read-hour-from_plc');
 
-
-// const getLastDayHourString = require('./get-last-day').getLastDayHourString;
-// const getLastDay = require('./get-last-day').getLastDayString;
 const { getCurrentLocalDateTime, getLastDayString: getLastDay, getLastDayHourString } = require('./get-last-day');
 
-const getLastDayEco1 = require('./controller/update-last-day-test');
+// const getLastDayEco1 = require('./controller/update-last-day-test');
 
-global.m340data = [...Array(M340_NO_CONNECTION )];
+global.m340data = [...Array(M340_NO_CONNECTION)];
 function connectPLC() {
     client.connectTCP("192.168.1.229", { port: PLC_PORT })
         .then(() => {
@@ -43,7 +40,6 @@ function connectPLC() {
             console.log(`PLC connection error ${getCurrentLocalDateTime()} ----  `, err.message);
             setTimeout(connectPLC, PLC_RECONNECT_DELAY)
         });
-
 }
 
 connectPLC();
