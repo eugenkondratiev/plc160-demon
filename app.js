@@ -18,12 +18,12 @@ const PLC_RECONNECT_DELAY = 180000;
 const SERVER_RECONNECT_DELAY = 15000;
 const REACHABLE_PORT_TIMEOUT = 5000;
 const DATA_COLLECT_PERIOD = 1000;
+const logIt = require('./logger');
 
 const m340 = require('./m340read');
 const bits = require('./bit-operations');
 bits.addBinFunctions();
 
-const logIt = require("./logger");
 const readHourFromPlc = require('./controller/read-hour-from_plc');
 
 const { getCurrentLocalDateTime, getLastDayString: getLastDay, getLastDayHourString } = require('./get-last-day');
@@ -84,7 +84,7 @@ demon.on('connectFailed', function (error) {
 
 
 demon.on('connect', function (connection) {
-    logIt("demon.connect('ws://95.158.47.15:8081');");
+    logIt("demon.connect('ws://95.158.44.52:8081');");
     connection.on('error', function (error) {
         logIt("Connection Error: " + error.toString());
     });
@@ -113,8 +113,7 @@ demon.on('connect', function (connection) {
                 // logIt("Handled day data: '" + JSON.stringify(dayDataEco1) + "'");
 
                 let outgoingMessage = JSON.stringify({ lastDayEco3: answer, timestamp: new Date() }).toString();
-                // let outgoingMessage = JSON.stringify({ lastDayEco1: dayDataEco1, timestamp: new Date() }).toString();
-                console.log("outgoingMessage   ", outgoingMessage);
+                // console.log("outgoingMessage   ", outgoingMessage);
                 connection.sendUTF(outgoingMessage);
             }
         }
@@ -138,11 +137,11 @@ const isPortReahable = require('./is-port-reachable');
 
 function reCall() {
 
-    isPortReahable(8081, { host: '95.158.47.15', timeout: REACHABLE_PORT_TIMEOUT })
+    isPortReahable(8081, { host: '95.158.44.52', timeout: REACHABLE_PORT_TIMEOUT })
         .then(isTrue => {
             if (isTrue) {
-                // logIt("demon.connect('ws://95.158.47.15:8081');");
-                demon.connect('ws://95.158.47.15:8081');
+                logIt("demon.connect('ws://95.158.44.52:8081');");
+                // demon.connect('ws://95.158.44.52:8081');
             } else {
                 logIt("Can not connect. Another try;");
                 setTimeout(reCall, SERVER_RECONNECT_DELAY);
@@ -158,5 +157,5 @@ function reCall() {
 
 reCall();
 
-//logIt("demon.connect('ws://95.158.47.15:8081');");
+//logIt("demon.connect('ws://95.158.44.52:8081');");
 

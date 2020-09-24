@@ -4,6 +4,7 @@ const Eco3_COLLECTION = "hourReportsEco3";
 const LOCAL_ECO3_COLLECTION = "Eco3";
 const fs = require('fs');
 const LOCAL = true;
+const logIt = require('../logger');
 
 async function insertNewHourRecordToMongo(_manager) {
     try {
@@ -31,11 +32,11 @@ async function insertNewHourRecordToMongo(_manager) {
         }
 
         await inserting((error) => {
-            console.log(" collection.updateOne problem ", error);
+            logIt(" collection.updateOne problem " + error.message);
             fs.writeFile('reserv/' + newRecord._id.replace(/:/g, '-') + '.json', JSON.stringify(newRecord, null, " "), (err => { if (err) console.error }))
         })
         await inserting((error) => {
-            console.log(" Loacl MongoDbcollection.updateOne problem ", error);
+            LogIt(" Loacl MongoDbcollection.updateOne problem " +  error.message);
         },
             LOCAL)
     } catch (err) {

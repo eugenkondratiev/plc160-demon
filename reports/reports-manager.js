@@ -56,7 +56,7 @@ class ReportManager {
         );
         const currentDateTime = new Date();
         const hh = currentDateTime.toLocaleTimeString("ru-UA", { hour: "2-digit" }).slice(0, 3) + ":00:00";
-        hourRow.unshift(currentDateTime.toLocaleString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 10) + " " + zcyjzcyjhh)
+        hourRow.unshift(currentDateTime.toLocaleString("ru-UA", { year: "numeric", month: "2-digit", day: "2-digit" }).slice(0, 10) + " " + hh)
         return hourRow;
     }
     formMongoDbRecord() {

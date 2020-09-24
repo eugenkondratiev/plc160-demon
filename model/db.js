@@ -20,7 +20,7 @@ function dbExecute(_sql, values) {
 }
 
 function dbQuery(_sql, values) {
-    console.log("_sql :  ", _sql);
+    // console.log("_sql :  ", _sql);
 
     return new Promise((resolve, reject) => {
             dbPool.query( {
