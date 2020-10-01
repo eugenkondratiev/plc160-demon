@@ -90,11 +90,12 @@ demon.on('connect', function (connection) {
     });
     connection.on('close', function () {
         logIt('echo-protocol Connection Closed', connection.state);
-        process.exit();
+        // process.exit();
+        reCall();
     });
     connection.on('message', async function (message) {
         logIt("Received msg type: '" + message.type + "'");
-
+        let outgoingMessage;
         if (message.type === 'utf8') {
             // TODO: receive necessery parameters list
             logIt("Received: '" + message.utf8Data + "'");
@@ -102,31 +103,36 @@ demon.on('connect', function (connection) {
             if (msg.lastDayUpdate && msg.eco == 3) {
                 // const dayDataEco1 = await getLastDayEco1();
                 const answer = [];
-                for (let i = 0; i < 24; i++) {
-                    const resp = await readHourFromPlc(client, i, LAST_DAY);
-                    resp.unshift(getLastDayHourString(i));
-                    console.log("resp " + i + " ", resp);
-                    answer.push(resp)
+                try {
+                    for (let i = 0; i < 24; i++) {
+                        const resp = await readHourFromPlc(client, i, LAST_DAY);
+                        resp.unshift(getLastDayHourString(i));
+                        console.log("resp " + i + " ", resp);
+                        answer.push(resp)
+                    }
+                    logIt("Handled day data Eco3 Day: '" + JSON.stringify(answer) + "\n'");
+                    // logIt("Handled day data: '" + JSON.stringify(dayDataEco1) + "'");
+                    outgoingMessage = JSON.stringify({ lastDayEco3: answer, timestamp: new Date() }).toString();
+                } catch (error) {
+                    logIt("fetch Eco3 Day data FAILED \n");
+                    outgoingMessage = JSON.stringify({ error: "fetch Eco3 Day data FAILED", timestamp: new Date() }).toString();
                 }
-                logIt("Handled day data Eco3 Day: '" + JSON.stringify(answer) + "\n'");
 
-                // logIt("Handled day data: '" + JSON.stringify(dayDataEco1) + "'");
-
-                let outgoingMessage = JSON.stringify({ lastDayEco3: answer, timestamp: new Date() }).toString();
                 // console.log("outgoingMessage   ", outgoingMessage);
                 connection.sendUTF(outgoingMessage);
             }
         }
     });
+    let handler;
 
     function sendNumber() {
         if (connection.connected) {
-
+            handler ? clearTimeout(handler) : undefined;
             const dataarr = m340data.map((el, index) => Number.isFinite(el) ? (index < 30 ? el.toFixed(2) : el) : " - ");
             const dt = new Date();
             let outgoingMessage = JSON.stringify({ eco3: dataarr, timestamp: dt }).toString();
             connection.sendUTF(outgoingMessage);
-            let handler = setTimeout(sendNumber, DATA_SEND_DELAY);
+            handler = setTimeout(sendNumber, DATA_SEND_DELAY);
         }
     }
     dataHandler = sendNumber();
@@ -140,8 +146,8 @@ function reCall() {
     isPortReahable(8081, { host: '95.158.44.52', timeout: REACHABLE_PORT_TIMEOUT })
         .then(isTrue => {
             if (isTrue) {
-                logIt("demon.connect('ws://95.158.44.52:8081');");
-                // demon.connect('ws://95.158.44.52:8081');
+                // logIt("demon.connect('ws://95.158.44.52:8081');");
+                demon.connect('ws://95.158.44.52:8081');
             } else {
                 logIt("Can not connect. Another try;");
                 setTimeout(reCall, SERVER_RECONNECT_DELAY);
