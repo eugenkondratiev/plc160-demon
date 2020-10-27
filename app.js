@@ -84,7 +84,7 @@ demon.on('connectFailed', function (error) {
 
 
 demon.on('connect', function (connection) {
-    logIt("demon.connect('ws://95.158.44.52:8081');");
+    // logIt("demon.connect('ws://95.158.44.52:8081');");
     connection.on('error', function (error) {
         logIt("Connection Error: " + error.toString());
     });
@@ -146,7 +146,7 @@ function reCall() {
     isPortReahable(8081, { host: '95.158.44.52', timeout: REACHABLE_PORT_TIMEOUT })
         .then(isTrue => {
             if (isTrue) {
-                // logIt("demon.connect('ws://95.158.44.52:8081');");
+                logIt("TRY TO demon.connect('ws://95.158.44.52:8081');");
                 demon.connect('ws://95.158.44.52:8081');
             } else {
                 logIt("Can not connect. Another try;");
