@@ -9,7 +9,7 @@ const logIt = require('../logger');
 async function insertNewHourRecordToMongo(_manager) {
     try {
         const newRecord = _manager.formMongoDbRecord();
-        // console.log("##DATA  newRecord ", newRecord);
+        console.log("##DATA  newRecord ", newRecord);
         const _query = { _id: newRecord._id }
         const _update = {
             $set: {
@@ -43,12 +43,6 @@ async function insertNewHourRecordToMongo(_manager) {
         console.log("#### FIND ERROR ", err);
     }
 }
-
-// try {
-//     main()
-// } catch (error) {
-//     console.log("main error ", error)
-// }
 
 module.exports = insertNewHourRecordToMongo;
 

@@ -7,8 +7,8 @@ const m340read = require('../m340read');
 const fs = require('fs');
 
 const { getReportParametrsList, getParametrValue, getReportsArray } = require('../model/get-parameters');
-const { CLIENT_RENEG_LIMIT } = require('tls');
-
+// const { CLIENT_RENEG_LIMIT } = require('tls');
+// 
 
 class ReportManager {
     constructor(_reportsArray) {
@@ -87,10 +87,16 @@ async function main() {
         const manager = new ReportManager(reportsArray);
         const schedule = require('node-schedule');
         const rule = new schedule.RecurrenceRule();
+        // const rule = new schedule.RecurrenceRule({minute:0, second:0});
         rule.minute = 0;
-        rule.seconds = 0;
+        rule.second = 0;
 
-        function showViewTable() {
+        const ruleHalfAnHour = new schedule.RecurrenceRule();
+        // const rule = new schedule.RecurrenceRule({minute:0, second:0});
+        ruleHalfAnHour.minute = [25, 55];
+        ruleHalfAnHour.second = 14;
+
+        function showViewTabАle() {
             const viewTable = manager._list.map(el => {
                 return {
                     name: el.name,
@@ -102,7 +108,15 @@ async function main() {
             });
             console.table(viewTable);
         }
-
+        const schHandlerHalfHour  = schedule.scheduleJob( ruleHalfAnHour, async ()=>{
+            try {
+                await require('../model/ping-mysql-once_in-half-an-hour')();
+                
+            } catch (error) {
+                console.log("  ping mysql problem ", error);
+                
+            };
+        })
         const schHandler = schedule.scheduleJob(rule, async () => {
             console.log('New hour, i think !  ', (new Date()).toUTCString);
             try {

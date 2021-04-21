@@ -5,7 +5,8 @@ const ModbusRTU = require("modbus-serial");
 const client = new ModbusRTU(tcpPort);
 const LAST_DAY = true;
 
-const PLC_PORT = 4001;
+const PLC_PORT = 4002;
+
 
 const BLOCK_START = 0;
 const BLOCK_SIZE = 62;
@@ -13,11 +14,12 @@ const FLOATS_BLOCK_SIZE = 58;
 const INT_DATA = [29, 30, 31, 32];
 const M340_NO_CONNECTION = FLOATS_BLOCK_SIZE + INT_DATA.length;
 
-const DATA_SEND_DELAY = 2000;
+const DATA_SEND_DELAY = 1000;
 const PLC_RECONNECT_DELAY = 180000;
 const SERVER_RECONNECT_DELAY = 15000;
 const REACHABLE_PORT_TIMEOUT = 5000;
 const DATA_COLLECT_PERIOD = 1000;
+
 const logIt = require('./logger');
 
 const m340 = require('./m340read');
@@ -34,7 +36,8 @@ global.m340data = [...Array(M340_NO_CONNECTION)];
 function connectPLC() {
     client.connectTCP("192.168.1.229", { port: PLC_PORT })
         .then(() => {
-            client.setID(5);
+            client.setID(7);
+            console.log("client.setID(7);")
         })
         .catch((err) => {
             console.log(`PLC connection error ${getCurrentLocalDateTime()} ----  `, err.message);
@@ -51,6 +54,8 @@ handler = setInterval(function () {
 
             const _answer = data.data;
             const floats = m340.getFloatsFromMOdbusCoils(_answer.slice(0, FLOATS_BLOCK_SIZE));
+            // console.log( "P9 - ", m340data[2]);
+            
             floats.forEach((fl, i) => {
                 m340data[i] = fl
             });
