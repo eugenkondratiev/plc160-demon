@@ -5,14 +5,14 @@ async function pingMySql(_manager) {
     try {
         try {
             const rlt = await dbQuery("SELECT 1 FROM eco.hourseco3",);
-            console.log("### dbQuery result  - ", rlt);
+            console.log("### mqsql Ping  result  - ", rlt);
 
         } catch (error) {
-            console.log(" insert hour query problem ", error);
+            console.log(" mqsql Ping  problem ", error);
         }
 
     } catch (err) {
-        console.log("#### insertNewHourRecordToMysql ERROR ", err);
+        console.log("#### mqsql Ping  ERROR ", err);
     }
 }
 

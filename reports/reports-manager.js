@@ -96,7 +96,7 @@ async function main() {
         ruleHalfAnHour.minute = [25, 55];
         ruleHalfAnHour.second = 14;
 
-        function showViewTabАle() {
+        function showViewTable() {
             const viewTable = manager._list.map(el => {
                 return {
                     name: el.name,
