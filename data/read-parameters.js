@@ -77,7 +77,7 @@ function updateLists() {
                             new3[el].description = eco3[el].description;
                             new3[el].units = eco3[el].units;
                             //new3[el].index = eco3[el].index === undefined ? -1 : eco3[el].index;
-                            new3[el].index = eco3[el].num;
+                            new3[el].index = eco3[el].num - 1;
                             // console.log(" ### new3[el] ", new3[el], eco3[el]);
                         });
                     } catch (error3) {
