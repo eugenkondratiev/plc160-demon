@@ -170,3 +170,22 @@ reCall();
 
 //logIt("demon.connect('ws://95.158.44.52:8081');");
 
+const schedule = require('node-schedule');
+
+const twiceAWeek = schedule.RecurrenceRule();
+twiceAWeek.dayOfWeek = [0,3]
+twiceAWeek.hour = 0
+twiceAWeek.minute = 0
+twiceAWeek.second = 7
+
+const handlerTwiceAWeekShedule = schedule.scheduleJob(
+    twiceAWeek,
+    ()=>{
+        try {
+            ;
+            // stop process here to restart using pm2
+        } catch (error) {
+            console.log("twiceA week task error  ", error)
+        }
+    }
+)

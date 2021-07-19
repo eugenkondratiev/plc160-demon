@@ -89,7 +89,7 @@ async function main() {
         const rule = new schedule.RecurrenceRule();
         // const rule = new schedule.RecurrenceRule({minute:0, second:0});
         rule.minute = 0;
-        rule.second = 0;
+        rule.second = 1;
 
         const ruleHalfAnHour = new schedule.RecurrenceRule();
         // const rule = new schedule.RecurrenceRule({minute:0, second:0});
@@ -139,9 +139,9 @@ async function main() {
         setInterval(() => {
             manager.updateCurrentValues();
         }, 1000)
-        setTimeout(() => {
-            require('../model/insert-hour-to-mysql')(manager).catch(err => (console.error("model/insert-hour-to-mysql error ", err)));
-        }, 7000)
+        // setTimeout(() => {
+        //     require('../model/insert-hour-to-mysql')(manager).catch(err => (console.error("model/insert-hour-to-mysql error ", err)));
+        // }, 7000)
     } catch (error) {
         console.log("## main ERROR ", error)
     }
