@@ -172,7 +172,7 @@ reCall();
 
 const schedule = require('node-schedule');
 
-const twiceAWeek = schedule.RecurrenceRule();
+const twiceAWeek = new schedule.RecurrenceRule();
 twiceAWeek.dayOfWeek = [0,3]
 twiceAWeek.hour = 0
 twiceAWeek.minute = 0
