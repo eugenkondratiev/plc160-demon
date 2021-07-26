@@ -7,6 +7,11 @@ const LAST_DAY = true;
 
 const PLC_PORT = 4002;
 
+const W_38_INDEX = 20
+const Q_39_INDEX = 19
+const T_18_INDEX = 10
+const T_5_INDEX = 8
+
 
 const BLOCK_START = 0;
 const BLOCK_SIZE = 62;
@@ -59,6 +64,14 @@ handler = setInterval(function () {
             floats.forEach((fl, i) => {
                 m340data[i] = fl
             });
+            //calculation W_38 
+            try {
+                m340data[W_38_INDEX] = m340data[Q_39_INDEX] * (m340data[T_18_INDEX] - m340data[T_5_INDEX]);
+                
+            } catch (error) {
+                logIt("W_38 calculation error . ");
+            }
+
             INT_DATA.forEach(i => {
                 m340data[i] = _answer[i + 29];
             })

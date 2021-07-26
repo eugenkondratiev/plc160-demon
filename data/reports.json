@@ -23,7 +23,8 @@
         { "parametr": "P_12", "type": 0 },
         { "parametr": "P_13", "type": 0 },
         { "parametr": "T_19", "type": 0 },
-        { "parametr": "P_30", "type": 0 }
+        { "parametr": "P_30", "type": 0 },
+        { "parametr": "W_38", "type": 0 }
 
     ]
 }
