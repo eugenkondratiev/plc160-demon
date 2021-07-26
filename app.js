@@ -182,7 +182,12 @@ const handlerTwiceAWeekShedule = schedule.scheduleJob(
     twiceAWeek,
     ()=>{
         try {
-            ;
+            logIt("Process restarting ");
+
+            setTimeout(()=>{
+                process.exit(1);
+            }, 5000)
+            
             // stop process here to restart using pm2
         } catch (error) {
             console.log("twiceA week task error  ", error)
