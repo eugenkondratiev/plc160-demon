@@ -66,7 +66,7 @@ handler = setInterval(function () {
             });
             //calculation W_38 
             try {
-                m340data[W_38_INDEX] = m340data[Q_39_INDEX] * (m340data[T_18_INDEX] - m340data[T_5_INDEX]);
+                m340data[W_38_INDEX] = m340data[Q_39_INDEX] * (m340data[T_18_INDEX] - m340data[T_5_INDEX]) / 1000.0;
                 
             } catch (error) {
                 logIt("W_38 calculation error . ");
@@ -199,7 +199,7 @@ const handlerTwiceAWeekShedule = schedule.scheduleJob(
 
             setTimeout(()=>{
                 process.exit(1);
-            }, 5000)
+            }, 7000)
             
             // stop process here to restart using pm2
         } catch (error) {
