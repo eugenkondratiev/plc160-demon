@@ -146,7 +146,7 @@ demon.on('connect', function (connection) {
     function sendNumber() {
         if (connection.connected) {
             handler ? clearTimeout(handler) : undefined;
-            const dataarr = m340data.map((el, index) => Number.isFinite(el) ? (index < 30 ? el.toFixed(2) : el) : " - ");
+            const dataarr = m340data.map((el, index) => Number.isFinite(el) ? (index < 30 ? el.toFixed(3) : el) : " - ");
             const dt = new Date();
             let outgoingMessage = JSON.stringify({ eco3: dataarr, timestamp: dt }).toString();
             connection.sendUTF(outgoingMessage);
